@@ -9,10 +9,14 @@
 
 'use strict';
 
-const Alexa = require('alexa-sdk');
-const MountainProjectApiKey = process.env.MOUNTAIN_PROJECT_API_KEY;
-
+const AlexaSdk = require('alexa-sdk');
+let alexa = require("alexa-app");
 let request = require('request');
+
+var alexaApp = new alexa.app("mountain-project-alexa-skill");
+
+const MOUNTAIN_PROJECT_API_KEY = process.env.MOUNTAIN_PROJECT_API_KEY;
+const APP_ID = process.env.APP_ID
 
 const languageStrings = {
   'en-US': {
@@ -27,24 +31,17 @@ const languageStrings = {
 };
 
 let getRoute = function(routeId) {
-  const getRouteUrl = `https://www.mountainproject.com/data?action=getRoutes&routeIds=${routeId}&key=${MountainProjectApiKey}`
+  const getRouteUrl = `https://www.mountainproject.com/data?action=getRoutes&routeIds=${routeId}&key=${MOUNTAIN_PROJECT_API_KEY}`
   return new Promise(function (fulfill, reject) {
     request(getRouteUrl, (error, response, body) => {
       fulfill(JSON.parse(body));
     });
   });
-}
+};
 
-const handlers = {
-  'LaunchRequest': function () {
-    this.emit('GetRecentClimb');
-  },
-  'RecentClimb': function () {
-    this.emit('GetRecentClimb');
-  },
-  'GetRecentClimb': function () {
-    const url = `https://www.mountainproject.com/data?action=getTicks&email=gowie.matt@gmail.com&key=${MountainProjectApiKey}`;
-    let alexa = this;
+let getRecentClimb = function() {
+  const url = `https://www.mountainproject.com/data?action=getTicks&email=gowie.matt@gmail.com&key=${MOUNTAIN_PROJECT_API_KEY}`;
+  return new Promise(function(fulfill, reject) {
     request(url, function(error, response, bodyJson) {
       var result = '';
       const statusCode = response.statusCode;
@@ -52,48 +49,67 @@ const handlers = {
 
       if (error) {
         console.error(error.message);
-        result = this.t('ERROR_MESSAGE');
-        this.emit(':tell', result);
+        reject(error.message)
         return;
       } else {
         let body = JSON.parse(bodyJson);
         if (body && body['ticks'] && body['ticks'].length > 0) {
           let routeId = body['ticks'][0]['routeId'];
           getRoute(routeId).then(function(routesBody) {
-            let route = routesBody['routes'][0];
-            result = `You climbed ${route['name']} at ${route['location'][route['location'].length - 1]}`;
-            console.log("RESULT: ", result);
-            alexa.emit(':tell', result);
+            var route = routesBody['routes'][0];
+            fulfill(route);
           });
         } else {
-          // TODO
+          reject("No Ticks for User");
         }
       }
     });
-  },
-  'AMAZON.HelpIntent': function () {
-    const speechOutput = this.t('HELP_MESSAGE');
-    const reprompt = this.t('HELP_MESSAGE');
-    this.emit(':ask', speechOutput, reprompt);
-  },
-  'AMAZON.CancelIntent': function () {
-    this.emit(':tell', this.t('STOP_MESSAGE'));
-  },
-  'AMAZON.StopIntent': function () {
-    this.emit(':tell', this.t('STOP_MESSAGE'));
-  },
-  'SessionEndedRequest': function () {
-    this.emit(':tell', this.t('STOP_MESSAGE'));
-  },
+  });
 };
 
-exports.handler = (event, context) => {
-  const alexa = Alexa.handler(event, context);
-  console.log("Event: ", event);
-  alexa.appId = process.env.APP_ID;
-
-  // To enable string internationalization (i18n) features, set a resources object.
-  alexa.resources = languageStrings;
-  alexa.registerHandlers(handlers);
-  alexa.execute();
+alexaApp.pre = function(request, response, type) {
+  if (process.env.AWS_ENVIRONMENT !== 'development' && request['sessionDetails']['application']['applicationId'] != APP_ID) {
+    // fail ungracefully
+    console.error("Error -- Request: ", request);
+    response.fail("Invalid applicationId");
+  }
 };
+
+alexaApp.launch(function(request, response) {
+  var alexa = this;
+  getRecentClimb().then(function(route) {
+    let result = `You climbed ${route['name']} at ${route['location'][route['location'].length - 1]}`;
+    console.log("RESULT: ", result);
+    response.say(result).send();
+  }, function(error) {
+    console.error(error);
+  });
+  return false;
+});
+
+alexaApp.intent("RecentClimb", {
+    utterances: [
+      "what are my recent climbs",
+      "what did I climb recently",
+      "what climbs was I on recently"
+    ]
+  },
+  function(request, response) {
+    var alexa = this;
+    getRecentClimb().then(function(route) {
+      let result = `You climbed ${route['name']} at ${route['location'][route['location'].length - 1]}`;
+      console.log("RESULT: ", result);
+      response.say(result).send();
+    }, function(error) {
+      console.error(error);
+    });
+    return false;
+  }
+);
+
+alexaApp.error = function(exception, request, response) {
+  console.error(exception);
+  response.say("Sorry, something bad happened!");
+};
+
+exports.handler = alexaApp.lambda();

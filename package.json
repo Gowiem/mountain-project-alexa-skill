@@ -18,6 +18,7 @@
   "author": "Matt Gowie",
   "license": "ISC",
   "dependencies": {
+    "alexa-app": "^2.4.0",
     "alexa-sdk": "^1.0.6",
     "request": "^2.79.0"
   }
