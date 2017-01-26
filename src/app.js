@@ -4,7 +4,9 @@
  * This is an Alexa Skill to query the Mountain Project Data API (https://www.mountainproject.com/data)
  * It allows Alexa users to:
  *   - Ask about their recent climbs
- *   - TODO
+ *   - Ask about their recent Todos
+ *   - Ask about what their hardest grade was
+ *   -
  **/
 
 'use strict';
@@ -19,6 +21,9 @@ const mountainProjectApi = require('./mountain-project-api')('gowie.matt@gmail.c
 
 // Setup
 const alexaApp = new alexa.app('mountain-project-alexa-skill');
+
+// Setup MP Api instance on alexaApp for testability.
+alexaApp.mpApi = mountainProjectApi;
 
 const languageStrings = {
   'en-US': {
@@ -39,7 +44,7 @@ const logError = (error) => {
 };
 
 const recentClimbIntent = function(request, response) {
-  mountainProjectApi.getRecentClimb().then((route) => {
+  alexaApp.mpApi.getRecentClimb().then((route) => {
     let result = `You climbed ${route['name']} at ${_.last(route['location'])}`;
     response.say(result).send();
   }, logError);
@@ -47,11 +52,23 @@ const recentClimbIntent = function(request, response) {
 };
 
 const recentTodoIntent = function(request, response) {
-  mountainProjectApi.getRecentTodos().then((route) => {
+  alexaApp.mpApi.getRecentTodos().then((route) => {
+    console.log("ROUTE: ", route);
     let result = `You added ${route['name']} to your list of todos`;
     response.say(result).send();
   }, logError);
   return false;
+};
+
+const hardestGradeIntent = function(request, response) {
+  alexaApp.mpApi.getTicks().then((ticksJson) => {
+    if (!_.isEmpty(ticksJson['hardest'])) {
+      let result = `Your hardest grade was rated ${ticksJson['hardest']}`;
+      response.say(result).send();
+    } else {
+      response.say('You havent climbed anything yet!');
+    }
+  });
 };
 
 alexaApp.pre = function(request, response, type) {
@@ -80,9 +97,24 @@ alexaApp.intent('RecentTodo', {
     ]
   }, recentTodoIntent);
 
+alexaApp.intent('HardestGrade', {
+    utterances: [
+      'what was my hardest grade',
+      'what is my hardest grade',
+    ]
+  }, hardestGradeIntent);
+
 alexaApp.error = function(exception, request, response) {
   console.error(exception);
   response.say('Sorry, something bad happened!');
 };
 
 exports.handler = alexaApp.lambda();
+exports.intentTesting = function(mockMpApi) {
+  alexaApp.mpApi = mockMpApi;
+  return {
+    recentClimbIntent: recentClimbIntent,
+    recentTodoIntent: recentTodoIntent,
+    hardestGradeIntent: hardestGradeIntent
+  };
+};
