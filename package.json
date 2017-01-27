@@ -22,6 +22,7 @@
     "alexa-sdk": "^1.0.6",
     "lodash": "^4.17.4",
     "nodeunit": "^0.10.2",
+    "redis": "^2.6.5",
     "request": "^2.79.0"
   },
   "devDependencies": {

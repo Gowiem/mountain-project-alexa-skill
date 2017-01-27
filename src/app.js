@@ -11,19 +11,25 @@
 
 'use strict';
 
-const mountainProjectApiKey = process.env.MOUNTAIN_PROJECT_API_KEY;
+const MP_API_KEY = process.env.MOUNTAIN_PROJECT_API_KEY;
 const APP_ID = process.env.APP_ID;
+const REDIS_HOST = process.env.REDIS_HOST;
 
 const _ = require('lodash');
 const AlexaSdk = require('alexa-sdk');
 const alexa = require('alexa-app');
-const mountainProjectApi = require('./mountain-project-api')('gowie.matt@gmail.com', mountainProjectApiKey);
+const mountainProjectApi = require('./mountain-project-api')('gowie.matt@gmail.com', MP_API_KEY);
+const redis = require("redis");
 
 // Setup
 const alexaApp = new alexa.app('mountain-project-alexa-skill');
+const redisClient = redis.createClient({
+  host: REDIS_HOST
+});
 
-// Setup MP Api instance on alexaApp for testability.
+// Setup MP Api instance + redis on alexaApp for testability.
 alexaApp.mpApi = mountainProjectApi;
+alexaApp.redisClient = redisClient;
 
 const languageStrings = {
   'en-US': {
@@ -112,6 +118,7 @@ alexaApp.error = function(exception, request, response) {
 exports.handler = alexaApp.lambda();
 exports.intentTesting = function(mockMpApi) {
   alexaApp.mpApi = mockMpApi;
+  alexaApp.redisClient.end(true);
   return {
     recentClimbIntent: recentClimbIntent,
     recentTodoIntent: recentTodoIntent,
