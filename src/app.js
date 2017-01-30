@@ -100,7 +100,7 @@ const pairingStartIntent = function(request, response) {
 // - Do Pairing ID key lookup to get email
 // - Writes USER_ID_TO_EMAILS_KEY entry with the User ID supplied by standard Alexa Lambda request.
 const pairingFinalizeIntent = function(request, response) {
-  let pairingId = request.slot('PAIRING_ID'),
+  let pairingId = request.slot('PAIRINGID'),
       userId = request.getSession().details.userId;
 
   if (_.isEmpty(pairingId)) {
@@ -172,11 +172,11 @@ alexaApp.intent('PairingStart', {
 
 alexaApp.intent('PairingFinalize', {
   utterances: [
-    'pair {PAIRING_ID}',
-    "i'd like to pair {PAIRING_ID}"
+    'pair {PAIRINGID}',
+    "i'd like to pair {PAIRINGID}"
   ],
   slots: {
-    'PAIRING_ID': 'AMAZON.NUMBER'
+    'PAIRINGID': 'AMAZON.NUMBER'
   }
 }, pairingFinalizeIntent)
 
