@@ -4,6 +4,7 @@
   "description": "An Alexa Skill to interact with the Mountain Project Data API",
   "main": "src/index.js",
   "scripts": {
+    "deploy": "TMPDIR=/tmp node-lambda deploy",
     "test": "nodeunit tests/"
   },
   "keywords": [
