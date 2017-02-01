@@ -16,6 +16,7 @@ const APP_ID = process.env.APP_ID;
 const REDIS_HOST = process.env.REDIS_HOST;
 
 const USER_ID_TO_EMAILS_KEY = 'user_id_to_emails';
+const DEFAULT_COUNT = 3;
 
 const _ = require('lodash');
 const AlexaSdk = require('alexa-sdk');
@@ -58,10 +59,26 @@ const languageStrings = {
 
 // Helper functions
 
-const logError = (error) => {
+const logError = function(error) {
   console.error(error);
 };
 
+const errorResponse = function(response) {
+  return (error) => {
+    logError(error);
+    response.say(translate('ERROR_MESSAGE')).done();
+  };
+};
+
+const buildRouteLocationStrings = function(routes) {
+  return _.map(routes, (route, idx) => {
+    let routeLocationString = ` ${route['name'] || 'Unknown'} at ${_.last(route['location']) || 'Unknown'}`;
+    if (idx === routes.length - 1 && idx !== 0) {
+      routeLocationString = ' and' + routeLocationString;
+    }
+    return routeLocationString;
+  });
+};
 // NOTE: Not sure how to use Alexa SDK's translate function while using 'alexa-app', so
 // making a quick translate function till I deal with that.
 const translate = function(translationName) {
@@ -139,17 +156,21 @@ const mpApiIntentHelper = function(intentFunc) {
 };
 
 const recentClimbIntent = mpApiIntentHelper((mpApi, request, response) => {
-  mpApi.getRecentClimb().then((route) => {
-    let result = `You climbed ${route['name']} at ${_.last(route['location'])}`;
+  const count = request.slot('COUNT') || DEFAULT_COUNT;
+  mpApi.getRecentClimbs(count).then((routes) => {
+    let climbedAts = buildRouteLocationStrings(routes);
+    let result = `You recently climbed${climbedAts.join(',')}.`;
     response.say(result).send();
-  }, logError);
+  }, errorResponse(response));
 });
 
 const recentTodoIntent = mpApiIntentHelper((mpApi, request, response) => {
-  mpApi.getRecentTodos().then((route) => {
-    let result = `You added ${route['name']} to your list of todos`;
+  let count = request.slot('COUNT') || DEFAULT_COUNT;
+  mpApi.getRecentTodos(count).then((routes) => {
+    let todosAdded = buildRouteLocationStrings(routes);
+    let result = `You added${todosAdded.join(',')} to your list of todos.`;
     response.say(result).send();
-  }, logError);
+  }, errorResponse(response));
 });
 
 const hardestGradeIntent = mpApiIntentHelper((mpApi, request, response) => {
@@ -160,7 +181,7 @@ const hardestGradeIntent = mpApiIntentHelper((mpApi, request, response) => {
     } else {
       response.say(translate('HAVENT_CLIMBED_YET'));
     }
-  }, logError);
+  }, errorResponse(response));
 });
 
 alexaApp.intent('PairingStart', {
@@ -171,28 +192,35 @@ alexaApp.intent('PairingStart', {
 }, pairingStartIntent);
 
 alexaApp.intent('PairingFinalize', {
+  slots: {
+    'PAIRINGID': 'AMAZON.NUMBER'
+  },
   utterances: [
     'pair {PAIRINGID}',
     "i'd like to pair {PAIRINGID}"
-  ],
-  slots: {
-    'PAIRINGID': 'AMAZON.NUMBER'
-  }
+  ]
 }, pairingFinalizeIntent)
 
 alexaApp.intent('RecentClimb', {
+  slots: {
+    'COUNT': 'AMAZON.NUMBER'
+  },
   utterances: [
-    'what are my recent climbs',
-    'what did I climb recently',
-    'what climbs was I on recently'
+    'what are my {2-5|COUNT} most recent climbs',
+    'what are my {2-5|COUNT} recent climbs',
+    'what are my {most|} recent climbs',
+    'what did I climb {most|} recently',
+    'what climbs was I on {most|} recently'
   ]
 }, recentClimbIntent);
 
 alexaApp.intent('RecentTodo', {
   utterances: [
-    'what are my recent todos',
-    'what did I todo recently',
-    'what climbs did I add to my todo list recently',
+    'what are my {2-5|COUNT} most recent todos',
+    'what are my {2-5|COUNT} recent todos',
+    'what are my {most|} recent todos',
+    'what did I todo {most|} recently',
+    'what climbs did I add to my todo list {most|} recently',
   ]
 }, recentTodoIntent);
 

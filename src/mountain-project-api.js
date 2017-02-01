@@ -17,16 +17,21 @@ const buildUrlClosure = function(email, apiKey) {
   };
 };
 
-const getRoute = function(routeId) {
-  const getRouteUrl = this._buildUrl('getRoutes', { routeIds: routeId });
+const getRoutes = function(routeIds) {
+  const routeIdsString = _.join(routeIds, ',') || routeIds;
+  const getRoutesUrl = this._buildUrl('getRoutes', { 'routeIds': routeIdsString });
   return new Promise((fulfill, reject) => {
-    request(getRouteUrl, (error, response, bodyJson) => {
-      fulfill(JSON.parse(bodyJson));
+    request(getRoutesUrl, (error, response, bodyJson) => {
+      if (!_.isEmpty(error)) {
+        reject(error);
+      } else {
+        fulfill(JSON.parse(bodyJson));
+      }
     });
   });
 };
 
-const getRecentTodos = function() {
+const getRecentTodos = function(count) {
   const getTodosUrl = this._buildUrl('getToDos');
   return new Promise((fulfill, reject) => {
     request(getTodosUrl, (error, response, bodyJson) => {
@@ -36,10 +41,9 @@ const getRecentTodos = function() {
       } else {
         const body = JSON.parse(bodyJson);
         if (!_.isEmpty(body['toDos'])) {
-          const routeId = body['toDos'][0];
-          this.getRoute(routeId).then((routesBody) => {
-            const route = routesBody['routes'][0];
-            fulfill(route);
+          const routeIds = _.take(body['toDos'], count);
+          this.getRoutes(routeIds).then((routesBody) => {
+            fulfill(routesBody['routes']);
           }, reject);
         }
       }
@@ -61,28 +65,28 @@ const getTicks = function() {
   });
 };
 
-const getRecentClimb = function() {
+const getRecentClimbs = function(count) {
   return new Promise((fulfill, reject) => {
     this.getTicks().then((ticksResponse) => {
       if (!_.isEmpty(ticksResponse['ticks'])) {
-        const routeId = ticksResponse['ticks'][0]['routeId'];
-        this.getRoute(routeId).then((routesBody) => {
-          const route = routesBody['routes'][0];
-          fulfill(route);
+        const routeIds = _.map(_.take(ticksResponse['ticks'], count), 'routeId');
+        this.getRoutes(routeIds).then((routesBody) => {
+          const routes = routesBody['routes'];
+          fulfill(routes);
         }, reject);
       } else {
         reject("No Ticks for User");
       }
-    });
+    }, reject);
   });
 };
 
 module.exports = function(email, apiKey) {
   return {
-    getRecentClimb: getRecentClimb,
+    getRecentClimbs: getRecentClimbs,
     getRecentTodos: getRecentTodos,
     getTicks: getTicks,
-    getRoute: getRoute,
+    getRoutes: getRoutes,
     _buildUrl: buildUrlClosure(email, apiKey)
-  }
+  };
 };

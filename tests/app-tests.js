@@ -1,16 +1,17 @@
 const apiFixtures = require('../fixtures/api-fixtures');
 const app = require('../src/app.js');
+const _ = require('lodash');
 
 const mockMpApi = function() {
   return {
-    getRecentClimb: () => {
+    getRecentClimbs: (count) => {
       return new Promise((fulfill) => {
-        fulfill(apiFixtures.routeFixture['routes'][0]);
+        fulfill(_.take(apiFixtures.routeFixture['routes'], count));
       });
     },
-    getRecentTodos: () => {
+    getRecentTodos: (count) => {
       return new Promise((fulfill) => {
-        fulfill(apiFixtures.routeFixture['routes'][0]);
+        fulfill(_.take(apiFixtures.routeFixture['routes'], count));
       });
     },
     getTicks: () => {
@@ -18,7 +19,7 @@ const mockMpApi = function() {
         fulfill(apiFixtures.ticksFixture);
       });
     },
-    getRoute: () => {
+    getRoutes: () => {
       return new Promise((fulfill) => {
         fulfill(apiFixtures.routeFixture);
       });
@@ -52,10 +53,14 @@ const mockResponse = function() {
   };
 };
 
-const mockRequest = function() {
+const mockRequest = function(count) {
   return {
-    slot: () => {
-      return '1234';
+    slot: (name) => {
+      if (name === 'COUNT') {
+        return count;
+      } else {
+        return '1234';
+      }
     },
     getSession: () => {
       return {
@@ -126,27 +131,50 @@ module.exports = {
 
     subject.pairingFinalizeIntent(testRequest, testResponse);
   },
-  testRecentClimbIntent: function(test) {
+  testRecentClimbIntentWithNoCount: function(test) {
     let testResponse = mockResponse();
 
     test.expect(1);
     testResponse.onComplete = () => {
-      test.equal(testResponse.sayResult, "You climbed Left Banana Crack at Banana Cracks");
+      test.equal(testResponse.sayResult, "You recently climbed Left Banana Crack at Banana Cracks.");
       test.done();
     };
 
-    this.subject.recentClimbIntent(mockRequest(), testResponse);
+    this.subject.recentClimbIntent(mockRequest(1), testResponse);
   },
-  testRecentTodosIntent: function(test) {
+
+  testRecentClimbIntentWithCountOf2: function(test) {
     let testResponse = mockResponse();
 
     test.expect(1);
     testResponse.onComplete = () => {
-      test.equal(testResponse.sayResult, "You added Left Banana Crack to your list of todos");
+      test.equal(testResponse.sayResult, 'You recently climbed Left Banana Crack at Banana Cracks, and Leap Year Flake at Dairy Queen Wall - Left Side.');
       test.done();
     };
 
-    this.subject.recentTodoIntent(mockRequest(), testResponse);
+    this.subject.recentClimbIntent(mockRequest(2), testResponse);
+  },
+  testRecentTodosIntentWithNoCount: function(test) {
+    let testResponse = mockResponse();
+
+    test.expect(1);
+    testResponse.onComplete = () => {
+      test.equal(testResponse.sayResult, 'You added Left Banana Crack at Banana Cracks to your list of todos.');
+      test.done();
+    };
+
+    this.subject.recentTodoIntent(mockRequest(1), testResponse);
+  },
+  testRecentTodosIntentWithCountOf4: function(test) {
+    let testResponse = mockResponse();
+
+    test.expect(1);
+    testResponse.onComplete = () => {
+      test.equal(testResponse.sayResult, 'You added Left Banana Crack at Banana Cracks, Leap Year Flake at Dairy Queen Wall - Left Side, Fiddler on the Roof at Black Velvet Wall, and Weathering Frights at Baskerville Rock to your list of todos.');
+      test.done();
+    };
+
+    this.subject.recentTodoIntent(mockRequest(4), testResponse);
   },
   testHardestGradeIntent: function(test) {
     let testResponse = mockResponse();

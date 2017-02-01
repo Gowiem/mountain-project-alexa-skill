@@ -1,14 +1,16 @@
 const mountainProjectApi = require('../src/mountain-project-api');
 const nock = require('nock');
-const apiFixtures = require('../fixtures/api-fixtures.js')
+const apiFixtures = require('../fixtures/api-fixtures.js');
+const _ = require('lodash');
 
-const mockGetRoute = function() {
+const mockGetRoutes = function(count) {
+  const result = _.set(apiFixtures.routeFixture, 'routes', _.take(apiFixtures.routeFixture['routes'], count));
   nock('https://www.mountainproject.com')
     .get(/data/)
     .query(function(queryObject) {
       return queryObject['routeIds'] === '105846247';
     })
-    .reply(200, JSON.stringify(apiFixtures.routeFixture));
+    .reply(200, JSON.stringify(result));
 };
 
 module.exports = {
@@ -17,19 +19,19 @@ module.exports = {
     callback();
   },
   testBuildUrlWithParams: function(test) {
-    const url = this.subject._buildUrl('getRoute', { routeIds: '123' });
+    const url = this.subject._buildUrl('getRoutes', { routeIds: '123' });
     test.ok(url.includes('routeIds=123'));
     test.done()
   },
-  testGetRoute: function(test) {
-    mockGetRoute();
+  testGetRoutes: function(test) {
+    mockGetRoutes();
     test.expect(1);
-    this.subject.getRoute(105846247).then((getRouteResponse) => {
-      test.deepEqual(getRouteResponse, apiFixtures.routeFixture);
+    this.subject.getRoutes(105846247).then((getRoutesResponse) => {
+      test.deepEqual(getRoutesResponse, apiFixtures.routeFixture);
       test.done();
     });
   },
-  testGetRecentClimb: function(test) {
+  testgetRecentClimbs: function(test) {
 
     nock('https://www.mountainproject.com')
       .get('/data')
@@ -37,11 +39,13 @@ module.exports = {
         return queryObject['action'] === 'getTicks';
       })
       .reply(200, JSON.stringify(apiFixtures.ticksFixture));
-    mockGetRoute();
+
+    const count = 1;
+    mockGetRoutes(count);
 
     test.expect(1);
-    this.subject.getRecentClimb().then((getRecentResponse) => {
-      test.deepEqual(apiFixtures.routeFixture['routes'][0], getRecentResponse);
+    this.subject.getRecentClimbs(count).then((getRecentResponse) => {
+      test.deepEqual(apiFixtures.routeFixture['routes'], getRecentResponse);
       test.done();
     });
   },
@@ -52,11 +56,12 @@ module.exports = {
         return queryObject['action'] == 'getToDos';
       })
       .reply(200, JSON.stringify(apiFixtures.todosFixture));
-    mockGetRoute();
+    const count = 1;
+    mockGetRoutes(count);
 
     test.expect(1);
-    this.subject.getRecentTodos().then((getTodosResponse) => {
-      test.deepEqual(getTodosResponse, apiFixtures.routeFixture['routes'][0]);
+    this.subject.getRecentTodos(count).then((getTodosResponse) => {
+      test.deepEqual(getTodosResponse, apiFixtures.routeFixture['routes']);
       test.done();
     });
   }
