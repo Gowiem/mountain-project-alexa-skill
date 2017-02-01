@@ -203,18 +203,21 @@ alexaApp.intent('PairingFinalize', {
 
 alexaApp.intent('RecentClimb', {
   slots: {
-    'COUNT': 'AMAZON.NUMBER'
+    'COUNT': 'AMAZON.NUMBER',
   },
   utterances: [
     'what are my {2-5|COUNT} most recent climbs',
     'what are my {2-5|COUNT} recent climbs',
     'what are my {most|} recent climbs',
     'what did I climb {most|} recently',
-    'what climbs was I on {most|} recently'
+    'what climbs was I on {most|} recently',
   ]
 }, recentClimbIntent);
 
 alexaApp.intent('RecentTodo', {
+  slots: {
+    'COUNT': 'AMAZON.NUMBER',
+  },
   utterances: [
     'what are my {2-5|COUNT} most recent todos',
     'what are my {2-5|COUNT} recent todos',
