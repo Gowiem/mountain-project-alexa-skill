@@ -46,7 +46,8 @@ const languageStrings = {
 
       PAIRING_START: "To start with the Mountain Project skill, \
                       you'll need to pair your device so we can look up your stats. \
-                      Go to mpskill.com and follow the instructions to pair your email and device.",
+                      Go to <say-as interpret-as="spell-out">mp</say-as>skill dot com and follow \
+                      the instructions to pair your email and device.",
       PAIRING_TOO_OLD: 'Sorry, your pairing ID was too old. Please try pairing again.',
       PAIRING_SUCCESS: "You've successfully paired your device. \
                         You can now ask about your Mountain Project stats. \
