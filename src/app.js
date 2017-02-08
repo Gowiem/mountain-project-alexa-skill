@@ -90,14 +90,18 @@ const getEmail = function(request) {
   return new Promise((fulfill, reject) => {
     // 1. Check for cached email in session, fulfill if found
     let email = request.getSession().get('email');
+    console.log("getEmail - email from session: ", email);
     if (!_.isEmpty(email)) {
+      console.log("getEmail - fulfilling due to session email");
       fulfill(email);
       return;
     }
 
     // 2. Check Redis, if not found then rejects
     let userId = request.getSession().details.userId;
+    console.log("getEmail - userId: ", userId);
     alexaApp.redisClient.hget(USER_ID_TO_EMAILS_KEY, userId, (emailFromRedis) => {
+      console.log("getEmail - emailFromRedis: ", emailFromRedis);
       if (!_.isEmpty(emailFromRedis)) {
         fulfill(emailFromRedis);
       } else {
@@ -144,15 +148,18 @@ const pairingFinalizeIntent = function(request, response) {
 
 const mpApiIntentHelper = function(intentFunc) {
   return (request, response) => {
+    console.log("Request Received: ", request);
     getEmail(request).then((email) => {
+      console.log("Found email: ", email);
       let mpApi = alexaApp.mountainProjectApiCreator(email, MP_API_KEY);
       intentFunc(mpApi, request, response);
-      return false;
     }, () => {
+      console.log("Wasn't able to find email, sending pairing message.");
       // Wasn't able to find email, pairing required.
       response.say(translate('PAIRING_START')).send();
-      return true;
     });
+
+    return false;
   };
 };
 
