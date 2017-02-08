@@ -2,7 +2,7 @@
   "name": "mountain-project-alexa-skill",
   "version": "1.0.0",
   "description": "An Alexa Skill to interact with the Mountain Project Data API",
-  "main": "src/index.js",
+  "main": "src/app.js",
   "scripts": {
     "deploy": "TMPDIR=/tmp node-lambda deploy",
     "test": "nodeunit tests/"
