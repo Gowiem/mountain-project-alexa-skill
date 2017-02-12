@@ -241,11 +241,9 @@ alexaApp.intent('PairingFinalize', {
 
 alexaApp.intent('PairingUndo', {
   utterances: [
-    "I'd like to unpair",
-    "I'd like to unpair my account",
-    'unpair',
-    'unpair my account {please|}',
-    '{please|} unpair my account',
+    "I'd like to detach {my account|}",
+    'detach {my account|} {please|}',
+    '{please|} detach {my account|}',
   ]
 }, pairingUndoIntent);
 
@@ -257,9 +255,9 @@ alexaApp.intent('RecentClimb', {
     'what are my {-|COUNT} {most|} {recent|} climbs',
     'what are my {most|} {recent|} climbs',
     'what did I climb {most|} recently',
-    'what climbs was I on {most|} recently',
-    'list my {recent|} climbs',
-    'list my {-|COUNT} {recent|} climbs'
+    'what climbs was I on {last|} {most|} {recently|}',
+    'list my {most|} {recent|} {last|} climbs',
+    'list my {-|COUNT} {most|} {recent|} {last|} climbs'
   ]
 }, recentClimbIntent);
 
@@ -268,13 +266,12 @@ alexaApp.intent('RecentTodo', {
     'COUNT': 'AMAZON.NUMBER',
   },
   utterances: [
-    'what are my {-|COUNT} {most|} {recent|} todos',
-    'what are my {-|COUNT} {recent|} todos',
-    'what are my {most|} recent todos',
-    'what did I todo {most|} recently',
-    'what climbs did I add to my todo list {most|} recently',
-    'list my {recent|} todos',
-    'list my {-|COUNT} {recent|} todos'
+    'what are my {-|COUNT} {most|} {recent|} {last|} toodoos',
+    'what are my {most|} {recent|} {last|} toodoos',
+    'what did I toodoo {most|} recently',
+    'what climbs did I add to my toodoo list {last|} {most|} {recently|}',
+    'list my {recent|} {last|} toodoos',
+    'list my {-|COUNT} {most|} {recent|} {last|} toodoos'
   ]
 }, recentTodoIntent);
 
@@ -282,7 +279,7 @@ alexaApp.intent('HardestGrade', {
   utterances: [
     'what was my hardest grade',
     'what is my hardest grade',
-    "what is the hardest grade {I've|I have} climbed",
+    "what is the hardest grade {I've|I have} {ever|} climbed",
     '{please|} tell me my hardest grade',
     'hardest grade {please|}',
   ]

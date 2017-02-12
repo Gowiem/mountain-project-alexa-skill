@@ -8,13 +8,16 @@ PairingFinalize	can you please pair {PAIRINGID}
 PairingFinalize	can you pair {PAIRINGID}
 PairingFinalize	i'd like to pair ID {PAIRINGID}
 PairingFinalize	i'd like to pair {PAIRINGID}
-PairingUndo	I'd like to unpair
-PairingUndo	I'd like to unpair my account
-PairingUndo	unpair
-PairingUndo	unpair my account please
-PairingUndo	unpair my account
-PairingUndo	please unpair my account
-PairingUndo	unpair my account
+PairingUndo	I'd like to un-pair my account
+PairingUndo	I'd like to un-pair
+PairingUndo	un-pair my account please
+PairingUndo	un-pair please
+PairingUndo	un-pair my account
+PairingUndo	un-pair
+PairingUndo	please un-pair my account
+PairingUndo	un-pair my account
+PairingUndo	please un-pair
+PairingUndo	un-pair
 RecentClimb	what are my {COUNT} most recent climbs
 RecentClimb	what are my {COUNT} recent climbs
 RecentClimb	what are my {COUNT} most climbs
@@ -25,30 +28,72 @@ RecentClimb	what are my most climbs
 RecentClimb	what are my climbs
 RecentClimb	what did I climb most recently
 RecentClimb	what did I climb recently
+RecentClimb	what climbs was I on last most recently
 RecentClimb	what climbs was I on most recently
+RecentClimb	what climbs was I on last recently
 RecentClimb	what climbs was I on recently
+RecentClimb	what climbs was I on last most
+RecentClimb	what climbs was I on most
+RecentClimb	what climbs was I on last
+RecentClimb	what climbs was I on
+RecentClimb	list my most recent last climbs
+RecentClimb	list my recent last climbs
+RecentClimb	list my most last climbs
+RecentClimb	list my last climbs
+RecentClimb	list my most recent climbs
 RecentClimb	list my recent climbs
+RecentClimb	list my most climbs
 RecentClimb	list my climbs
+RecentClimb	list my {COUNT} most recent last climbs
+RecentClimb	list my {COUNT} recent last climbs
+RecentClimb	list my {COUNT} most last climbs
+RecentClimb	list my {COUNT} last climbs
+RecentClimb	list my {COUNT} most recent climbs
 RecentClimb	list my {COUNT} recent climbs
+RecentClimb	list my {COUNT} most climbs
 RecentClimb	list my {COUNT} climbs
-RecentTodo	what are my {COUNT} most recent todos
-RecentTodo	what are my {COUNT} recent todos
-RecentTodo	what are my {COUNT} most todos
-RecentTodo	what are my {COUNT} todos
-RecentTodo	what are my {COUNT} recent todos
-RecentTodo	what are my {COUNT} todos
-RecentTodo	what are my most recent todos
-RecentTodo	what are my recent todos
-RecentTodo	what did I todo most recently
-RecentTodo	what did I todo recently
-RecentTodo	what climbs did I add to my todo list most recently
-RecentTodo	what climbs did I add to my todo list recently
-RecentTodo	list my recent todos
-RecentTodo	list my todos
-RecentTodo	list my {COUNT} recent todos
-RecentTodo	list my {COUNT} todos
+RecentTodo	what are my {COUNT} most recent last toodoos
+RecentTodo	what are my {COUNT} recent last toodoos
+RecentTodo	what are my {COUNT} most last toodoos
+RecentTodo	what are my {COUNT} last toodoos
+RecentTodo	what are my {COUNT} most recent toodoos
+RecentTodo	what are my {COUNT} recent toodoos
+RecentTodo	what are my {COUNT} most toodoos
+RecentTodo	what are my {COUNT} toodoos
+RecentTodo	what are my most recent last toodoos
+RecentTodo	what are my recent last toodoos
+RecentTodo	what are my most last toodoos
+RecentTodo	what are my last toodoos
+RecentTodo	what are my most recent toodoos
+RecentTodo	what are my recent toodoos
+RecentTodo	what are my most toodoos
+RecentTodo	what are my toodoos
+RecentTodo	what did I toodoo most recently
+RecentTodo	what did I toodoo recently
+RecentTodo	what climbs did I add to my toodoo list last most recently
+RecentTodo	what climbs did I add to my toodoo list most recently
+RecentTodo	what climbs did I add to my toodoo list last recently
+RecentTodo	what climbs did I add to my toodoo list recently
+RecentTodo	what climbs did I add to my toodoo list last most
+RecentTodo	what climbs did I add to my toodoo list most
+RecentTodo	what climbs did I add to my toodoo list last
+RecentTodo	what climbs did I add to my toodoo list
+RecentTodo	list my recent last toodoos
+RecentTodo	list my last toodoos
+RecentTodo	list my recent toodoos
+RecentTodo	list my toodoos
+RecentTodo	list my {COUNT} most recent last toodoos
+RecentTodo	list my {COUNT} recent last toodoos
+RecentTodo	list my {COUNT} most last toodoos
+RecentTodo	list my {COUNT} last toodoos
+RecentTodo	list my {COUNT} most recent toodoos
+RecentTodo	list my {COUNT} recent toodoos
+RecentTodo	list my {COUNT} most toodoos
+RecentTodo	list my {COUNT} toodoos
 HardestGrade	what was my hardest grade
 HardestGrade	what is my hardest grade
+HardestGrade	what is the hardest grade I've ever climbed
+HardestGrade	what is the hardest grade I have ever climbed
 HardestGrade	what is the hardest grade I've climbed
 HardestGrade	what is the hardest grade I have climbed
 HardestGrade	please tell me my hardest grade
