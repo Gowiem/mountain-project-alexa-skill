@@ -5,7 +5,8 @@
   "main": "src/app.js",
   "scripts": {
     "deploy": "TMPDIR=/tmp node-lambda deploy",
-    "test": "nodeunit tests/"
+    "test": "nodeunit tests/",
+    "interaction-model": "node src/generate-interaction-model.js"
   },
   "keywords": [
     "climbing",

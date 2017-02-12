@@ -262,15 +262,12 @@ alexaApp.error = function(exception, request, response) {
   response.say('Sorry, something bad happened!');
 };
 
-// Outputs the schema
-console.log("Alexa Schema: ", alexaApp.schema());
-console.log("Alexa Utterances: ", alexaApp.utterances());
-
 // Exports
 ///////////
 
 alexaApp.messages.NO_INTENT_FOUND = translate('ERROR_MESSAGE');
 exports.handler = alexaApp.lambda();
+exports.alexaApp = alexaApp;
 exports.intentTesting = function(mockMpApiCreator, mockRedisClient) {
   alexaApp.mountainProjectApiCreator = mockMpApiCreator;
   alexaApp.redisClient.end(true);
