@@ -36,21 +36,21 @@ const languageStrings = {
   'en-US': {
     translation: {
       SKILL_NAME: 'Mountain Project Skill',
-      HELP_MESSAGE: 'You can say what are my recent climbs, \
-                    what are my recent todos, what is my hardest grade?',
+      HELP_MESSAGE: "You can ask 'what are my five most recent climbs', \
+                    'what are my recent toodoos', or 'what is my hardest grade'?",
       HELP_REPROMPT: 'What can I help you with?',
       STOP_MESSAGE: 'Goodbye!',
       ERROR_MESSAGE: "Sorry, we couldn't understand that or had an internal issue. Please try again.",
 
-      PAIRING_START: "To start with the Mountain Project skill, \
-                      you'll need to pair your device so we can look up your stats. \
-                      Go to <say-as interpret-as="spell-out">mp</say-as>skill dot com and follow \
-                      the instructions to pair your email and device.",
+      PAIRING_START: "To start with this skill, \
+                      you'll need to pair your Mountain Project account's email so we can look up your stats. \
+                      Go to <say-as interpret-as='spell-out'>mp</say-as>skill dot com and follow \
+                      the instructions to pair your account email.",
       PAIRING_UNDO_DONE: "We have unpaired your Alexa account. Thank you.",
       PAIRING_TOO_OLD: 'Sorry, your pairing ID was too old. Please try pairing again.',
       PAIRING_SUCCESS: "You've successfully paired your device. \
-                        You can now ask about your Mountain Project stats. \
-                        Try asking Alexa about your recent climbs.",
+                        You can now ask 'what are my five most recent climbs', \
+                        'what are my recent toodoos', or 'what is my hardest grade'.",
 
       HAVENT_CLIMBED_YET: "You haven't climbed anything yet!",
     },
@@ -206,7 +206,7 @@ const recentTodoIntent = mpApiIntentHelper((mpApi, request, response) => {
   let count = getCount(request.slot('COUNT'));
   mpApi.getRecentTodos(count).then((routes) => {
     let todosAdded = buildRouteLocationStrings(routes);
-    let result = `You added${todosAdded.join(',')} to your list of todos.`;
+    let result = `You added the following to your toodoo list,${todosAdded.join(',')}.`;
     response.say(result).send();
   }, errorResponse(response));
 });
@@ -234,10 +234,13 @@ alexaApp.intent('PairingFinalize', {
     'PAIRINGID': 'AMAZON.NUMBER'
   },
   utterances: [
-    'pair {PAIRINGID}',
-    "i'd like to pair {PAIRINGID}"
+    '{please|} pair {-|PAIRINGID}',
+    'my pairing {ID|} is {-|PAIRINGID}',
+    'can you {please|} pair {-|PAIRINGID}',
+    "i'd like to pair {ID|} {-|PAIRINGID}"
   ]
-}, pairingFinalizeIntent)
+}, pairingFinalizeIntent);
+
 alexaApp.intent('PairingUndo', {
   utterances: [
     "I'd like to unpair",
@@ -253,11 +256,12 @@ alexaApp.intent('RecentClimb', {
     'COUNT': 'AMAZON.NUMBER',
   },
   utterances: [
-    'what are my {2-5|COUNT} most recent climbs',
-    'what are my {2-5|COUNT} recent climbs',
-    'what are my {most|} recent climbs',
+    'what are my {-|COUNT} {most|} {recent|} climbs',
+    'what are my {most|} {recent|} climbs',
     'what did I climb {most|} recently',
     'what climbs was I on {most|} recently',
+    'list my {recent|} climbs',
+    'list my {-|COUNT} {recent|} climbs'
   ]
 }, recentClimbIntent);
 
@@ -266,11 +270,13 @@ alexaApp.intent('RecentTodo', {
     'COUNT': 'AMAZON.NUMBER',
   },
   utterances: [
-    'what are my {2-5|COUNT} most recent todos',
-    'what are my {2-5|COUNT} recent todos',
+    'what are my {-|COUNT} {most|} {recent|} todos',
+    'what are my {-|COUNT} {recent|} todos',
     'what are my {most|} recent todos',
     'what did I todo {most|} recently',
     'what climbs did I add to my todo list {most|} recently',
+    'list my {recent|} todos',
+    'list my {-|COUNT} {recent|} todos'
   ]
 }, recentTodoIntent);
 
@@ -278,7 +284,9 @@ alexaApp.intent('HardestGrade', {
   utterances: [
     'what was my hardest grade',
     'what is my hardest grade',
-    "what is the hardest grade I've climbed",
+    "what is the hardest grade {I've|I have} climbed",
+    '{please|} tell me my hardest grade',
+    'hardest grade {please|}',
   ]
 }, hardestGradeIntent);
 
