@@ -107,9 +107,8 @@ const getEmail = function(request) {
   return new Promise((fulfill, reject) => {
     // 1. Check for cached email in session, fulfill if found
     let email = request.getSession().get('email');
-    console.log("getEmail - email from session: ", email);
     if (!_.isEmpty(email)) {
-      console.log("getEmail - fulfilling due to session email");
+      console.log('Got email from session! email: ', email);
       fulfill(email);
       return;
     }
@@ -118,6 +117,8 @@ const getEmail = function(request) {
     let userId = request.getSession().details.userId;
     getRedisClient().hget(USER_ID_TO_EMAILS_KEY, userId, (err, emailFromRedis) => {
       if (!_.isEmpty(emailFromRedis)) {
+        request.getSession().set('email', emailFromRedis);
+        response.shouldEndSession(false);
         fulfill(emailFromRedis);
       } else {
         reject(err);
