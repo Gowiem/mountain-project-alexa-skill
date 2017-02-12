@@ -71,6 +71,15 @@ const errorResponse = function(response) {
   };
 };
 
+const getCount = function(possibleCount) {
+  console.log("getCount: ", possibleCount);
+  if (possibleCount) {
+    return _.clamp(_.toNumber(possibleCount), 1, 5); // Clamp so Min: 1, Max: 5
+  } else {
+    return DEFAULT_COUNT;
+  }
+};
+
 const buildRouteLocationStrings = function(routes) {
   return _.map(routes, (route, idx) => {
     let routeLocationString = ` ${route['name'] || 'Unknown'} at ${_.last(route['location']) || 'Unknown'}`;
@@ -80,6 +89,7 @@ const buildRouteLocationStrings = function(routes) {
     return routeLocationString;
   });
 };
+
 // NOTE: Not sure how to use Alexa SDK's translate function while using 'alexa-app', so
 // making a quick translate function till I deal with that.
 const translate = function(translationName) {
@@ -164,7 +174,7 @@ const mpApiIntentHelper = function(intentFunc) {
 };
 
 const recentClimbIntent = mpApiIntentHelper((mpApi, request, response) => {
-  const count = request.slot('COUNT') || DEFAULT_COUNT;
+  const count = getCount(request.slot('COUNT'));
   mpApi.getRecentClimbs(count).then((routes) => {
     let climbedAts = buildRouteLocationStrings(routes);
     let result = `You recently climbed${climbedAts.join(',')}.`;
@@ -173,7 +183,7 @@ const recentClimbIntent = mpApiIntentHelper((mpApi, request, response) => {
 });
 
 const recentTodoIntent = mpApiIntentHelper((mpApi, request, response) => {
-  let count = request.slot('COUNT') || DEFAULT_COUNT;
+  let count = getCount(request.slot('COUNT'));
   mpApi.getRecentTodos(count).then((routes) => {
     let todosAdded = buildRouteLocationStrings(routes);
     let result = `You added${todosAdded.join(',')} to your list of todos.`;
