@@ -107,19 +107,10 @@ const translate = function(translationName) {
 
 const getEmail = function(request, response) {
   return new Promise((fulfill, reject) => {
-    // 1. Check for cached email in session, fulfill if found
-    let email = request.getSession().get('email');
-    if (!_.isEmpty(email)) {
-      console.log('Got email from session! email: ', email);
-      fulfill(email);
-      return;
-    }
-
-    // 2. Check Redis, if not found then rejects
+    // Check Redis, if not found then rejects
     let userId = request.getSession().details.userId;
     getRedisClient().hget(USER_ID_TO_EMAILS_KEY, userId, (err, emailFromRedis) => {
       if (!_.isEmpty(emailFromRedis)) {
-        request.getSession().set('email', emailFromRedis);
         fulfill(emailFromRedis);
       } else {
         reject(err);
@@ -140,7 +131,6 @@ const pairingUndoIntent = function(request, response) {
   let userId = request.getSession().details.userId;
   getRedisClient().hdel(USER_ID_TO_EMAILS_KEY, userId, (err, deleted) => {
     if (deleted) {
-      request.getSession().set('email', null);
       response.say(translate('PAIRING_UNDO_DONE')).send()
     } else {
       response.say(translate('PAIRING_START')).send()
