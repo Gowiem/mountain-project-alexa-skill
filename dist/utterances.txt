@@ -1,0 +1,57 @@
+PairingStart	start pairing
+PairingStart	I'd like to pair
+PairingFinalize	please pair {PAIRINGID}
+PairingFinalize	pair {PAIRINGID}
+PairingFinalize	my pairing ID is {PAIRINGID}
+PairingFinalize	my pairing is {PAIRINGID}
+PairingFinalize	can you please pair {PAIRINGID}
+PairingFinalize	can you pair {PAIRINGID}
+PairingFinalize	i'd like to pair ID {PAIRINGID}
+PairingFinalize	i'd like to pair {PAIRINGID}
+PairingUndo	I'd like to unpair
+PairingUndo	I'd like to unpair my account
+PairingUndo	unpair
+PairingUndo	unpair my account please
+PairingUndo	unpair my account
+PairingUndo	please unpair my account
+PairingUndo	unpair my account
+RecentClimb	what are my {COUNT} most recent climbs
+RecentClimb	what are my {COUNT} recent climbs
+RecentClimb	what are my {COUNT} most climbs
+RecentClimb	what are my {COUNT} climbs
+RecentClimb	what are my most recent climbs
+RecentClimb	what are my recent climbs
+RecentClimb	what are my most climbs
+RecentClimb	what are my climbs
+RecentClimb	what did I climb most recently
+RecentClimb	what did I climb recently
+RecentClimb	what climbs was I on most recently
+RecentClimb	what climbs was I on recently
+RecentClimb	list my recent climbs
+RecentClimb	list my climbs
+RecentClimb	list my {COUNT} recent climbs
+RecentClimb	list my {COUNT} climbs
+RecentTodo	what are my {COUNT} most recent todos
+RecentTodo	what are my {COUNT} recent todos
+RecentTodo	what are my {COUNT} most todos
+RecentTodo	what are my {COUNT} todos
+RecentTodo	what are my {COUNT} recent todos
+RecentTodo	what are my {COUNT} todos
+RecentTodo	what are my most recent todos
+RecentTodo	what are my recent todos
+RecentTodo	what did I todo most recently
+RecentTodo	what did I todo recently
+RecentTodo	what climbs did I add to my todo list most recently
+RecentTodo	what climbs did I add to my todo list recently
+RecentTodo	list my recent todos
+RecentTodo	list my todos
+RecentTodo	list my {COUNT} recent todos
+RecentTodo	list my {COUNT} todos
+HardestGrade	what was my hardest grade
+HardestGrade	what is my hardest grade
+HardestGrade	what is the hardest grade I've climbed
+HardestGrade	what is the hardest grade I have climbed
+HardestGrade	please tell me my hardest grade
+HardestGrade	tell me my hardest grade
+HardestGrade	hardest grade please
+HardestGrade	hardest grade

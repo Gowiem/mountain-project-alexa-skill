@@ -1,0 +1,43 @@
+{
+   "intents": [
+      {
+         "intent": "PairingStart",
+         "slots": []
+      },
+      {
+         "intent": "PairingFinalize",
+         "slots": [
+            {
+               "name": "PAIRINGID",
+               "type": "AMAZON.NUMBER"
+            }
+         ]
+      },
+      {
+         "intent": "PairingUndo",
+         "slots": []
+      },
+      {
+         "intent": "RecentClimb",
+         "slots": [
+            {
+               "name": "COUNT",
+               "type": "AMAZON.NUMBER"
+            }
+         ]
+      },
+      {
+         "intent": "RecentTodo",
+         "slots": [
+            {
+               "name": "COUNT",
+               "type": "AMAZON.NUMBER"
+            }
+         ]
+      },
+      {
+         "intent": "HardestGrade",
+         "slots": []
+      }
+   ]
+}
