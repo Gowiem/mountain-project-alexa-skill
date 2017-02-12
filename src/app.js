@@ -6,7 +6,9 @@
  *   - Ask about their recent climbs
  *   - Ask about their recent Todos
  *   - Ask about their hardest grade
- *   -
+ *
+ *  TODO:
+ *   - Update to use card continue link > pairing ID.
  **/
 
 'use strict';
@@ -80,7 +82,6 @@ const errorResponse = function(response) {
 };
 
 const getCount = function(possibleCount) {
-  console.log("getCount: ", possibleCount);
   if (possibleCount) {
     return _.clamp(_.toNumber(possibleCount), 1, 5); // Clamp so Min: 1, Max: 5
   } else {
@@ -194,17 +195,29 @@ const mpApiIntentHelper = function(intentFunc) {
 const recentClimbIntent = mpApiIntentHelper((mpApi, request, response) => {
   const count = getCount(request.slot('COUNT'));
   mpApi.getRecentClimbs(count).then((routes) => {
-    let climbedAts = buildRouteLocationStrings(routes);
-    let result = `You recently climbed${climbedAts.join(',')}.`;
+    let result;
+    if (!_.isEmpty(routes)) {
+      const climbedAts = buildRouteLocationStrings(routes);
+      result = `You recently climbed${climbedAts.join(',')}.`;
+    } else {
+      result = "You don't have any ticks. Plan your next trip!";
+    }
+
     response.say(result).send();
   }, errorResponse(response));
 });
 
 const recentTodoIntent = mpApiIntentHelper((mpApi, request, response) => {
-  let count = getCount(request.slot('COUNT'));
+  const count = getCount(request.slot('COUNT'));
   mpApi.getRecentTodos(count).then((routes) => {
-    let todosAdded = buildRouteLocationStrings(routes);
-    let result = `You added the following to your toodoo list,${todosAdded.join(',')}.`;
+    let result;
+    if (!_.isEmpty(routes)) {
+      const todosAdded = buildRouteLocationStrings(routes);
+      result = `You added the following to your toodoo list,${todosAdded.join(',')}.`;
+    } else {
+      result = "You don't have any todos. Plan your next trip!";
+    }
+
     response.say(result).send();
   }, errorResponse(response));
 });

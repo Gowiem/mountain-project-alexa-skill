@@ -35,6 +35,9 @@ const mockRedisClient = function() {
     hset: (_1, _2, _3, callback) => {
       callback();
     },
+    hget: (_1, _2, callback) => {
+      callback(null, 'fake@email.com');
+    },
     end: () => {}
   };
 };
@@ -131,6 +134,27 @@ module.exports = {
 
     subject.pairingFinalizeIntent(testRequest, testResponse);
   },
+  testRecentClimbIntentWithNoResults: function(test) {
+    let testResponse = mockResponse();
+    const mockMpApi2 = () => {
+      return {
+        getRecentClimbs: () => {
+          return new Promise((fulfill) => {
+            fulfill([]);
+          });
+        }
+      };
+    };
+    this.subject = app.intentTesting(mockMpApi2, mockRedisClient());
+
+    test.expect(1)
+    testResponse.onComplete = () => {
+      test.ok(testResponse.sayResult.includes("don't have any ticks"));
+      test.done();
+    };
+
+    this.subject.recentClimbIntent(mockRequest(), testResponse);
+  },
   testRecentClimbIntentWithNoCount: function(test) {
     let testResponse = mockResponse();
 
@@ -142,7 +166,6 @@ module.exports = {
 
     this.subject.recentClimbIntent(mockRequest(1), testResponse);
   },
-
   testRecentClimbIntentWithCountOf2: function(test) {
     let testResponse = mockResponse();
 
@@ -153,6 +176,27 @@ module.exports = {
     };
 
     this.subject.recentClimbIntent(mockRequest(2), testResponse);
+  },
+  testRecentTodosIntentWithNoResults: function(test) {
+    let testResponse = mockResponse();
+    const mockMpApi2 = () => {
+      return {
+        getRecentTodos: () => {
+          return new Promise((fulfill) => {
+            fulfill([]);
+          });
+        }
+      };
+    };
+    const subject = app.intentTesting(mockMpApi2, mockRedisClient());
+
+    test.expect(1)
+    testResponse.onComplete = () => {
+      test.ok(testResponse.sayResult.includes("don't have any todos"));
+      test.done();
+    };
+
+    subject.recentTodoIntent(mockRequest(), testResponse);
   },
   testRecentTodosIntentWithNoCount: function(test) {
     let testResponse = mockResponse();

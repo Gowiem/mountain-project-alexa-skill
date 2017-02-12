@@ -46,6 +46,8 @@ const getRecentTodos = function(count) {
           this.getRoutes(routeIds).then((routesBody) => {
             fulfill(routesBody['routes']);
           }, reject);
+        } else {
+          fulfill([]);
         }
       }
     }, reject);
@@ -76,7 +78,7 @@ const getRecentClimbs = function(count) {
           fulfill(routes);
         }, reject);
       } else {
-        reject("No Ticks for User");
+        fulfill([]);
       }
     }, reject);
   });
