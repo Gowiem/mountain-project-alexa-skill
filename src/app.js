@@ -104,7 +104,7 @@ const translate = function(translationName) {
   return languageStrings['en-US']['translation'][translationName];
 };
 
-const getEmail = function(request) {
+const getEmail = function(request, response) {
   return new Promise((fulfill, reject) => {
     // 1. Check for cached email in session, fulfill if found
     let email = request.getSession().get('email');
@@ -119,7 +119,6 @@ const getEmail = function(request) {
     getRedisClient().hget(USER_ID_TO_EMAILS_KEY, userId, (err, emailFromRedis) => {
       if (!_.isEmpty(emailFromRedis)) {
         request.getSession().set('email', emailFromRedis);
-        response.shouldEndSession(false);
         fulfill(emailFromRedis);
       } else {
         reject(err);
@@ -138,10 +137,9 @@ const pairingStartIntent = function(request, response) {
 
 const pairingUndoIntent = function(request, response) {
   let userId = request.getSession().details.userId;
-  getRedisClient().hget(USER_ID_TO_EMAILS_KEY, userId, (deleted) => {
+  getRedisClient().hdel(USER_ID_TO_EMAILS_KEY, userId, (err, deleted) => {
     if (deleted) {
       request.getSession().set('email', null);
-      request.shouldEndSession(true);
       response.say(translate('PAIRING_UNDO_DONE')).send()
     } else {
       response.say(translate('PAIRING_START')).send()
@@ -180,7 +178,7 @@ const pairingFinalizeIntent = function(request, response) {
 
 const mpApiIntentHelper = function(intentFunc) {
   return (request, response) => {
-    getEmail(request).then((email) => {
+    getEmail(request, response).then((email) => {
       let mpApi = alexaApp.mountainProjectApiCreator(email, MP_API_KEY);
       intentFunc(mpApi, request, response);
     }, () => {
@@ -301,6 +299,8 @@ alexaApp.pre = function(request, response, type) {
     console.error('Error -- Request: ', request);
     response.fail('Invalid applicationId');
   }
+
+  console.log("Request: ", JSON.stringify(request, null, 4));
 };
 
 alexaApp.launch(recentClimbIntent);
