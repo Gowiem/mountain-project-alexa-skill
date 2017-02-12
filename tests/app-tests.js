@@ -159,7 +159,7 @@ module.exports = {
 
     test.expect(1);
     testResponse.onComplete = () => {
-      test.equal(testResponse.sayResult, 'You added Left Banana Crack at Banana Cracks to your list of todos.');
+      test.equal(testResponse.sayResult, 'You added the following to your toodoo list, Left Banana Crack at Banana Cracks.');
       test.done();
     };
 
@@ -170,7 +170,8 @@ module.exports = {
 
     test.expect(1);
     testResponse.onComplete = () => {
-      test.equal(testResponse.sayResult, 'You added Left Banana Crack at Banana Cracks, Leap Year Flake at Dairy Queen Wall - Left Side, Fiddler on the Roof at Black Velvet Wall, and Weathering Frights at Baskerville Rock to your list of todos.');
+      test.equal(testResponse.sayResult, 'You added the following to your toodoo list, Left Banana Crack at Banana Cracks, Leap Year Flake at Dairy Queen Wall - Left Side, Fiddler on the Roof at Black Velvet Wall, and Weathering Frights at Baskerville Rock.');
+
       test.done();
     };
 

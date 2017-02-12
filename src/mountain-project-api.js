@@ -62,7 +62,7 @@ const getTicks = function() {
       } else {
         fulfill(JSON.parse(bodyJson));
       }
-    }, reject);
+    });
   });
 };
 

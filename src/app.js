@@ -46,6 +46,7 @@ const languageStrings = {
                       you'll need to pair your device so we can look up your stats. \
                       Go to <say-as interpret-as="spell-out">mp</say-as>skill dot com and follow \
                       the instructions to pair your email and device.",
+      PAIRING_UNDO_DONE: "We have unpaired your Alexa account. Thank you.",
       PAIRING_TOO_OLD: 'Sorry, your pairing ID was too old. Please try pairing again.',
       PAIRING_SUCCESS: "You've successfully paired your device. \
                         You can now ask about your Mountain Project stats. \
@@ -135,6 +136,21 @@ const pairingStartIntent = function(request, response) {
   response.say(translate('PAIRING_START')).send();
 };
 
+const pairingUndoIntent = function(request, response) {
+  let userId = request.getSession().details.userId;
+  getRedisClient().hget(USER_ID_TO_EMAILS_KEY, userId, (deleted) => {
+    if (deleted) {
+      request.getSession().set('email', null);
+      request.shouldEndSession(true);
+      response.say(translate('PAIRING_UNDO_DONE')).send()
+    } else {
+      response.say(translate('PAIRING_START')).send()
+    }
+  });
+
+  return false;
+};
+
 // - Do Pairing ID key lookup to get email
 // - Writes USER_ID_TO_EMAILS_KEY entry with the User ID supplied by standard Alexa Lambda request.
 const pairingFinalizeIntent = function(request, response) {
@@ -222,6 +238,15 @@ alexaApp.intent('PairingFinalize', {
     "i'd like to pair {PAIRINGID}"
   ]
 }, pairingFinalizeIntent)
+alexaApp.intent('PairingUndo', {
+  utterances: [
+    "I'd like to unpair",
+    "I'd like to unpair my account",
+    'unpair',
+    'unpair my account {please|}',
+    '{please|} unpair my account',
+  ]
+}, pairingUndoIntent);
 
 alexaApp.intent('RecentClimb', {
   slots: {
