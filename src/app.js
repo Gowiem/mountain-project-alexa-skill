@@ -27,10 +27,8 @@ const redis = require("redis");
 // Setup
 /////////
 const alexaApp = new alexa.app('mountain-project-alexa-skill');
-const redisClient = redis.createClient({ host: REDIS_HOST });
 
-// Setup mountainProjectApiCreator + edis on alexaApp for testability.
-alexaApp.redisClient = redisClient;
+// Setup mountainProjectApiCreator on alexaApp for testability.
 alexaApp.mountainProjectApiCreator = mountainProjectApiCreator;
 
 // String Constants
@@ -59,6 +57,15 @@ const languageStrings = {
 };
 
 // Helper functions
+
+const getRedisClient = function() {
+  if (_.isEmpty(alexaApp.redisClient)) {
+    alexaApp.redisClient = redis.createClient({ host: REDIS_HOST });
+    return alexaApp.redisClient;
+  } else {
+    return alexaApp.redisClient;
+  }
+}
 
 const logError = function(error) {
   console.error(error);
@@ -109,13 +116,11 @@ const getEmail = function(request) {
 
     // 2. Check Redis, if not found then rejects
     let userId = request.getSession().details.userId;
-    console.log("getEmail - userId: ", userId);
-    alexaApp.redisClient.hget(USER_ID_TO_EMAILS_KEY, userId, (emailFromRedis) => {
-      console.log("getEmail - emailFromRedis: ", emailFromRedis);
+    getRedisClient().hget(USER_ID_TO_EMAILS_KEY, userId, (err, emailFromRedis) => {
       if (!_.isEmpty(emailFromRedis)) {
         fulfill(emailFromRedis);
       } else {
-        reject();
+        reject(err);
       }
     });
   });
@@ -140,13 +145,13 @@ const pairingFinalizeIntent = function(request, response) {
     return true;
   }
 
-  alexaApp.redisClient.get(`pairing_${pairingId}`, (err, email) => {
+  getRedisClient().get(`pairing_${pairingId}`, (err, email) => {
     if (email === null || !_.isEmpty(err)) {
       response.say(translate('PAIRING_TOO_OLD')).send();
       return;
     }
 
-    alexaApp.redisClient.hset(USER_ID_TO_EMAILS_KEY, userId, email, () => {
+    getRedisClient().hset(USER_ID_TO_EMAILS_KEY, userId, email, () => {
       response.say(translate('PAIRING_SUCCESS')).send();
     });
   });
@@ -158,9 +163,7 @@ const pairingFinalizeIntent = function(request, response) {
 
 const mpApiIntentHelper = function(intentFunc) {
   return (request, response) => {
-    console.log("Request Received: ", request);
     getEmail(request).then((email) => {
-      console.log("Found email: ", email);
       let mpApi = alexaApp.mountainProjectApiCreator(email, MP_API_KEY);
       intentFunc(mpApi, request, response);
     }, () => {
@@ -280,7 +283,7 @@ exports.handler = alexaApp.lambda();
 exports.alexaApp = alexaApp;
 exports.intentTesting = function(mockMpApiCreator, mockRedisClient) {
   alexaApp.mountainProjectApiCreator = mockMpApiCreator;
-  alexaApp.redisClient.end(true);
+  getRedisClient().end(true);
   alexaApp.redisClient = mockRedisClient;
   return {
     pairingFinalizeIntent: pairingFinalizeIntent,
