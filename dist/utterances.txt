@@ -8,16 +8,16 @@ PairingFinalize	can you please pair {PAIRINGID}
 PairingFinalize	can you pair {PAIRINGID}
 PairingFinalize	i'd like to pair ID {PAIRINGID}
 PairingFinalize	i'd like to pair {PAIRINGID}
-PairingUndo	I'd like to un-pair my account
-PairingUndo	I'd like to un-pair
-PairingUndo	un-pair my account please
-PairingUndo	un-pair please
-PairingUndo	un-pair my account
-PairingUndo	un-pair
-PairingUndo	please un-pair my account
-PairingUndo	un-pair my account
-PairingUndo	please un-pair
-PairingUndo	un-pair
+PairingUndo	I'd like to detach my account
+PairingUndo	I'd like to detach
+PairingUndo	detach my account please
+PairingUndo	detach please
+PairingUndo	detach my account
+PairingUndo	detach
+PairingUndo	please detach my account
+PairingUndo	detach my account
+PairingUndo	please detach
+PairingUndo	detach
 RecentClimb	what are my {COUNT} most recent climbs
 RecentClimb	what are my {COUNT} recent climbs
 RecentClimb	what are my {COUNT} most climbs

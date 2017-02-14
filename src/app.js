@@ -6,9 +6,6 @@
  *   - Ask about their recent climbs
  *   - Ask about their recent Todos
  *   - Ask about their hardest grade
- *
- *  TODO:
- *   - Update to use card continue link > pairing ID.
  **/
 
 'use strict';
