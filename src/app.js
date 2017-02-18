@@ -266,12 +266,12 @@ alexaApp.intent('RecentTodo', {
     'COUNT': 'AMAZON.NUMBER',
   },
   utterances: [
-    'what are my {-|COUNT} {most|} {recent|} {last|} toodoos',
-    'what are my {most|} {recent|} {last|} toodoos',
-    'what did I toodoo {most|} recently',
-    'what climbs did I add to my toodoo list {last|} {most|} {recently|}',
-    'list my {recent|} {last|} toodoos',
-    'list my {-|COUNT} {most|} {recent|} {last|} toodoos'
+    'what are my {-|COUNT} {most|} {recent|} {last|} todos',
+    'what are my {most|} {recent|} {last|} todos',
+    'what did I todo {most|} recently',
+    'what climbs did I add to my todo list {last|} {most|} {recently|}',
+    'list my {recent|} {last|} todos',
+    'list my {-|COUNT} {most|} {recent|} {last|} todos'
   ]
 }, recentTodoIntent);
 
