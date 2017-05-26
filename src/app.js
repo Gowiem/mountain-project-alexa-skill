@@ -220,6 +220,13 @@ const hardestGradeIntent = mpApiIntentHelper((mpApi, request, response) => {
   }, errorResponse(response));
 });
 
+const launchIntent = function(request, response) {
+  response.shouldEndSession(false);
+  return response.say(translate('HELP_MESSAGE')).send()
+};
+
+// Intent Assignment
+
 alexaApp.intent('PairingStart', {
   utterances: [
     'start pairing',
@@ -300,7 +307,8 @@ alexaApp.pre = function(request, response, type) {
   console.log("Request: ", JSON.stringify(request, null, 4));
 };
 
-alexaApp.launch(recentClimbIntent);
+alexaApp.launch(launchIntent);
+
 alexaApp.error = function(exception, request, response) {
   console.error(exception);
   response.say('Sorry, something bad happened!');
